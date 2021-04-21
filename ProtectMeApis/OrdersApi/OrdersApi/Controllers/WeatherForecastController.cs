@@ -28,6 +28,12 @@ namespace OrdersApi.Controllers
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
+
+            _logger.LogInformation("NOT TODAY");
+            _logger.LogDebug("NOT TODAY - DEBUG");
+            _logger.LogWarning("NOT TODAY - TRACE");
+            _logger.LogError("EXCEPTION");
+
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
