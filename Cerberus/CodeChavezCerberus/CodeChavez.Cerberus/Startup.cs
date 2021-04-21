@@ -42,10 +42,10 @@ namespace CodeChavez.Cerberus
 
             services.AddControllers();
 
-            services.AddIdentityServer(options=> 
+            services.AddIdentityServer(options =>
             {
                 options.Discovery.CustomEntries.Add("client_registration", "~/connect/register");
-                
+
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
@@ -53,36 +53,35 @@ namespace CodeChavez.Cerberus
 
                 options.IssuerUri = AppConfigs.BaseUri;
 
-            })
-                .AddDeveloperSigningCredential()
-                // Configures Clients and Resources
-                .AddConfigurationStore(ops =>
-                {  
-                    ops.DefaultSchema = AppConfigs.DbOptions.Schema;
-                    ops.ConfigureDbContext = dbc =>
-                        dbc.UseSqlServer(AppConfigs.DbOptions.ConnectionString,
-                        sql =>
-                        {
-                            sql.MigrationsAssembly(migrationsAssembly);
-                            sql.MigrationsHistoryTable("__EFMigrationsHistory", AppConfigs.DbOptions.Schema);
-                        });
-                })
-                // Configures tokens, consents and codes, etc.
-                .AddOperationalStore(ops =>
-                {
-                    ops.DefaultSchema = AppConfigs.DbOptions.Schema;
-                    ops.ConfigureDbContext = odbc =>
-                    odbc.UseSqlServer(AppConfigs.DbOptions.ConnectionString,
-                    sql =>
-                    {
-                        sql.MigrationsAssembly(migrationsAssembly);
-                        sql.MigrationsHistoryTable("__EFMigrationsHistory", AppConfigs.DbOptions.Schema);
-                    });
+            }).AddDeveloperSigningCredential()
+              // Configures Clients and Resources
+              .AddConfigurationStore(ops =>
+              {
+                  ops.DefaultSchema = AppConfigs.DbOptions.Schema;
+                  ops.ConfigureDbContext = dbc =>
+                      dbc.UseSqlServer(AppConfigs.DbOptions.ConnectionString,
+                      sql =>
+                      {
+                          sql.MigrationsAssembly(migrationsAssembly);
+                          sql.MigrationsHistoryTable("__EFMigrationsHistory", AppConfigs.DbOptions.Schema);
+                      });
+              })
+              // Configures tokens, consents and codes, etc.
+              .AddOperationalStore(ops =>
+              {
+                  ops.DefaultSchema = AppConfigs.DbOptions.Schema;
+                  ops.ConfigureDbContext = odbc =>
+                  odbc.UseSqlServer(AppConfigs.DbOptions.ConnectionString,
+                  sql =>
+                  {
+                      sql.MigrationsAssembly(migrationsAssembly);
+                      sql.MigrationsHistoryTable("__EFMigrationsHistory", AppConfigs.DbOptions.Schema);
+                  });
 
-                    ops.EnableTokenCleanup = AppConfigs.DbOptions.EnableTokenCleanup;
-                    ops.TokenCleanupInterval = AppConfigs.DbOptions.TokenCleanupInterval;
-                    ops.TokenCleanupBatchSize = AppConfigs.DbOptions.TokenCleanupBatchSize;
-                });
+                  ops.EnableTokenCleanup = AppConfigs.DbOptions.EnableTokenCleanup;
+                  ops.TokenCleanupInterval = AppConfigs.DbOptions.TokenCleanupInterval;
+                  ops.TokenCleanupBatchSize = AppConfigs.DbOptions.TokenCleanupBatchSize;
+              });
             #endregion
 
 
