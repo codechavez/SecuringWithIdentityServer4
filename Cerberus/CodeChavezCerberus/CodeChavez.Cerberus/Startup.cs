@@ -45,6 +45,14 @@ namespace CodeChavez.Cerberus
             services.AddIdentityServer(options=> 
             {
                 options.Discovery.CustomEntries.Add("client_registration", "~/connect/register");
+                
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+
+                options.IssuerUri = AppConfigs.BaseUri;
+
             })
                 .AddDeveloperSigningCredential()
                 // Configures Clients and Resources

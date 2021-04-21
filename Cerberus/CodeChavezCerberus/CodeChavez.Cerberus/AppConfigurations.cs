@@ -8,6 +8,7 @@ namespace CodeChavez.Cerberus
     internal class AppConfigurations
     {
         public DbOptions DbOptions { get; set; }
+        public string BaseUri { get; set; }
     }
 
     internal class DbOptions
