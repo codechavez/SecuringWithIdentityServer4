@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Logging;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,7 +21,11 @@ namespace OrdersApi
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+                .Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -28,14 +33,16 @@ namespace OrdersApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var appSettings = Configuration.GetSection("AppConfigs").Get<AppConfigurations>();
+
             services.AddControllers();
 
             services.AddAuthentication("Bearer")
                     .AddIdentityServerAuthentication(options =>
                     {
-                        options.Authority = "http://localhost:44366/cerberus";
+                        options.Authority = appSettings.Authority;
                         options.RequireHttpsMetadata = false;
-                        options.ApiName = "OrdersApi";
+                        options.ApiName = appSettings.ResourceName;
                         options.LegacyAudienceValidation = true;
                         options.SupportedTokens = IdentityServer4.AccessTokenValidation.SupportedTokens.Jwt;
                     });
